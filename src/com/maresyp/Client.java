@@ -12,7 +12,7 @@ public class Client {
     }
 
     public void sendNotification(String notification, int returnTime) {
-        
+
     }
 
     public void stopConnection() throws IOException {
