@@ -1,12 +1,12 @@
 package com.maresyp;
 
 public class NrTelefoniczny implements Comparable{
-    String nr_kierunkowy;
-    String nr_telefonu;
+    String nrKierunkowy;
+    String nrTelefonu;
 
     public NrTelefoniczny(String nr_kierunkowy, String nr_telefonu) {
-        this.nr_kierunkowy = nr_kierunkowy;
-        this.nr_telefonu = nr_telefonu;
+        this.nrKierunkowy = nr_kierunkowy;
+        this.nrTelefonu = nr_telefonu;
     }
 
     @Override
@@ -16,6 +16,6 @@ public class NrTelefoniczny implements Comparable{
 
     @Override
     public String toString() {
-        return "" + nr_kierunkowy + " " + nr_telefonu;
+        return "" + nrKierunkowy + " " + nrTelefonu;
     }
 }
