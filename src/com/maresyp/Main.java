@@ -20,9 +20,9 @@ public class Main {
             try (Scanner scanner = new Scanner(System.in)) {
                 switch (scanner.nextInt()) {
                     case 1:
-                        Map<String, ArrayList<String>> groceries = LoadFile();
+                        Map<String, ArrayList<String>> groceries = loadFile();
                         System.out.println(groceries);
-                        SaveFile(groceries);
+                        saveFile(groceries);
                         break;
                     case 2:
                         System.out.println("2");
@@ -36,7 +36,7 @@ public class Main {
         }
     }
 
-    public static Map<String, ArrayList<String>> LoadFile() {
+    public static Map<String, ArrayList<String>> loadFile() {
         File file = new File("./src/com/maresyp/zakupy.txt");
         HashMap<String, ArrayList<String>> groceries = new HashMap<>();
         try (Scanner scanner = new Scanner(file)) {
@@ -56,8 +56,8 @@ public class Main {
         return groceries;
     }
 
-    public static void SaveFile(Map<String, ArrayList<String>> map) {
-        try (FileWriter file = new FileWriter("./src/com/maresyp/zakupy2.txt")) {
+    public static void saveFile(Map<String, ArrayList<String>> map) {
+        try (FileWriter file = new FileWriter("./src/com/maresyp/zakupy.txt")) {
             for (Map.Entry<String, ArrayList<String>> set : map.entrySet()) {
                 file.write(set.getKey() + "\n");
                 for (String s : set.getValue()) {
