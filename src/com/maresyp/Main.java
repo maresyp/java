@@ -2,6 +2,8 @@ package com.maresyp;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,8 @@ public class Main {
                     case 1:
                         Map<String, ArrayList<String>> groceries = LoadFile();
                         System.out.println(groceries);
-                        return;
+                        SaveFile(groceries);
+                        break;
                     case 2:
                         System.out.println("2");
                         return;
@@ -53,7 +56,16 @@ public class Main {
         return groceries;
     }
 
-    public static void SaveFile() {
-
+    public static void SaveFile(Map<String, ArrayList<String>> map) {
+        try (FileWriter file = new FileWriter("./src/com/maresyp/zakupy2.txt")) {
+            for (Map.Entry<String, ArrayList<String>> set : map.entrySet()) {
+                file.write(set.getKey() + "\n");
+                for (String s : set.getValue()) {
+                    file.write(s + "\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
