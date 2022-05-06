@@ -12,26 +12,26 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        while (true) {
-            System.out.println("Wybierz operacje: ");
-            System.out.println("[1] Wczytaj poprzedni plik");
-            System.out.println("[2] Zacznij od nowa");
-            System.out.println("[3] Wyjscie");
-            try (Scanner scanner = new Scanner(System.in)) {
-                switch (scanner.nextInt()) {
-                    case 1:
-                        Map<String, ArrayList<String>> groceries = loadFile();
-                        System.out.println(groceries);
-                        saveFile(groceries);
-                        break;
-                    case 2:
-                        System.out.println("2");
-                        return;
-                    case 3:
-                        return;
-                    default:
-                        System.out.println("Twoj wybor nie jest prawidlowy");
-                }
+        System.out.println("Wybierz operacje: ");
+        System.out.println("[1] Wczytaj poprzedni plik");
+        System.out.println("[2] Zacznij od nowa");
+        System.out.println("[3] Wyjscie");
+        try (Scanner scanner = new Scanner(System.in)) {
+            Map<String, ArrayList<String>> groceries;
+            switch (scanner.nextInt()) {
+                case 1:
+                    groceries = loadFile();
+                    System.out.println(groceries);
+                    addProduct(groceries);
+                    saveFile(groceries);
+                    break;
+                case 2:
+                    System.out.println("2");
+                    return;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Twoj wybor nie jest prawidlowy");
             }
         }
     }
@@ -66,6 +66,37 @@ public class Main {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void addProduct(Map<String, ArrayList<String>> map) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println("Podaj produkt jaki chcesz dodac w formacie [kategoria] produkt");
+            String line = scanner.nextLine();
+            String category = line.substring(line.indexOf("["), line.indexOf("]") + 1);
+            String product = line.substring(line.indexOf(" ") + 1);
+            ArrayList<String> cat = map.get(category);
+            if (cat == null) {
+                map.put(category, new ArrayList<>());
+                map.get(category).add(product);
+            } else {
+                cat.add(product);
+            }
+        }
+    }
+
+    public static void delProduct(Map<String, ArrayList<String>> map) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.println("Podaj produkt jaki chcesz usunac w formacie [kategoria] produkt");
+            String line = scanner.nextLine();
+            String category = line.substring(line.indexOf("["), line.indexOf("]") + 1);
+            String product = line.substring(line.indexOf(" ") + 1);
+            ArrayList<String> cat = map.get(category);
+            if (cat == null) {
+                System.out.println("Kategoria " + category + " nie istnieje !");
+            } else {
+                cat.remove(product);
+            }
         }
     }
 }
