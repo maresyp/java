@@ -1,9 +1,6 @@
 package com.maresyp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,15 +15,16 @@ public class Main {
         System.out.println("[3] Wyjscie");
         try (Scanner scanner = new Scanner(System.in)) {
             Map<String, ArrayList<String>> groceries;
-            switch (scanner.nextInt()) {
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
                 case 1:
                     groceries = loadFile();
+                    System.out.println("Akutalna lista zakupow: ");
                     System.out.println(groceries);
-                    addProduct(groceries);
-                    saveFile(groceries);
+                    options(groceries);
                     break;
                 case 2:
-                    System.out.println("2");
+                    groceries = new HashMap<>();
                     return;
                 case 3:
                     return;
@@ -46,7 +44,7 @@ public class Main {
                 if (line.startsWith("[") && line.endsWith("]")) {
                     groceries.put(line, new ArrayList<>());
                     lastCategory = line;
-                } else if (!line.isEmpty()){
+                } else if (!line.isEmpty() && !lastCategory.equals("")){
                     groceries.get(lastCategory).add(line);
                 }
             }
@@ -96,6 +94,36 @@ public class Main {
                 System.out.println("Kategoria " + category + " nie istnieje !");
             } else {
                 cat.remove(product);
+            }
+        }
+    }
+
+    public static void options(Map<String, ArrayList<String>> map) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("[1] Dodanie produktu do listy zakupów");
+            System.out.println("[2] Usunięcie produktu z listy zakupów");
+            System.out.println("[3] Usunięcie wszystkich produktów z listy zakupów");
+            System.out.println("[4] Zapis listy zakupów na dysku");
+            System.out.println("[5] Wyjscie");
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1:
+                    addProduct(map);
+                    break;
+                case 2:
+                    delProduct(map);
+                    break;
+                case 3:
+                    map.clear();
+                    break;
+                case 4:
+                    saveFile(map);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("To nie jest poprawny wybor !");
             }
         }
     }
