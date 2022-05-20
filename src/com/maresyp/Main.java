@@ -25,6 +25,7 @@ public class Main {
                     break;
                 case 2:
                     groceries = new HashMap<>();
+                    options(groceries, scanner);
                     return;
                 case 3:
                     return;
