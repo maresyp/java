@@ -21,7 +21,7 @@ public class Main {
                     groceries = loadFile();
                     System.out.println("Akutalna lista zakupow: ");
                     System.out.println(groceries);
-                    options(groceries);
+                    options(groceries, scanner);
                     break;
                 case 2:
                     groceries = new HashMap<>();
@@ -67,52 +67,57 @@ public class Main {
         }
     }
 
-    public static void addProduct(Map<String, ArrayList<String>> map) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Podaj produkt jaki chcesz dodac w formacie [kategoria] produkt");
-            String line = scanner.nextLine();
-            String category = line.substring(line.indexOf("["), line.indexOf("]") + 1);
-            String product = line.substring(line.indexOf(" ") + 1);
-            ArrayList<String> cat = map.get(category);
-            if (cat == null) {
-                map.put(category, new ArrayList<>());
-                map.get(category).add(product);
-            } else {
-                cat.add(product);
-            }
+    public static void addProduct(Map<String, ArrayList<String>> map, String category, String product) {
+        ArrayList<String> cat = map.get(category);
+        if (cat == null) {
+            map.put(category, new ArrayList<>());
+            map.get(category).add(product);
+        } else {
+            cat.add(product);
         }
+        System.out.println("Produkt dodany poprawnie.");
     }
 
-    public static void delProduct(Map<String, ArrayList<String>> map) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Podaj produkt jaki chcesz usunac w formacie [kategoria] produkt");
-            String line = scanner.nextLine();
-            String category = line.substring(line.indexOf("["), line.indexOf("]") + 1);
-            String product = line.substring(line.indexOf(" ") + 1);
-            ArrayList<String> cat = map.get(category);
-            if (cat == null) {
-                System.out.println("Kategoria " + category + " nie istnieje !");
-            } else {
+    public static void delProduct(Map<String, ArrayList<String>> map, String category, String product) {
+        ArrayList<String> cat = map.get(category);
+        if (cat == null) {
+            System.out.println("Kategoria " + category + " nie istnieje !");
+        } else {
+            if (cat.contains(product)) {
                 cat.remove(product);
+                if (cat.isEmpty()) {
+                    map.remove(category);
+                }
+                System.out.println("Produkt usuniety poprawnie");
+            } else {
+                System.out.println("Brak takiego produktu");
             }
         }
     }
 
-    public static void options(Map<String, ArrayList<String>> map) {
-        Scanner scanner = new Scanner(System.in);
+    public static void options(Map<String, ArrayList<String>> map, Scanner scanner) {
         while (true) {
             System.out.println("[1] Dodanie produktu do listy zakupów");
             System.out.println("[2] Usunięcie produktu z listy zakupów");
             System.out.println("[3] Usunięcie wszystkich produktów z listy zakupów");
             System.out.println("[4] Zapis listy zakupów na dysku");
-            System.out.println("[5] Wyjscie");
+            System.out.println("[5] Pokaz liste");
+            System.out.println("[6] Wyjscie");
             int choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
                 case 1:
-                    addProduct(map);
+                    System.out.println("Podaj produkt jaki chcesz dodac w formacie [kategoria] produkt");
+                    String line = scanner.nextLine();
+                    String category = line.substring(line.indexOf("["), line.indexOf("]") + 1);
+                    String product = line.substring(line.indexOf(" ") + 1);
+                    addProduct(map, category, product);
                     break;
                 case 2:
-                    delProduct(map);
+                    System.out.println("Podaj produkt jaki chcesz usunac w formacie [kategoria] produkt");
+                    line = scanner.nextLine();
+                    category = line.substring(line.indexOf("["), line.indexOf("]") + 1);
+                    product = line.substring(line.indexOf(" ") + 1);
+                    delProduct(map, category, product);
                     break;
                 case 3:
                     map.clear();
@@ -121,6 +126,9 @@ public class Main {
                     saveFile(map);
                     break;
                 case 5:
+                    System.out.println(map);
+                    break;
+                case 6:
                     return;
                 default:
                     System.out.println("To nie jest poprawny wybor !");
