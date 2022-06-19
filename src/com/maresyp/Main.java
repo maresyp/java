@@ -1,29 +1,21 @@
 package com.maresyp;
-
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Podaj 2 liczby oraz tekst : ");
-        int x = 0, y = 0;
-        String text = null;
-        try {
-            x = scanner.nextInt();
-            y = scanner.nextInt();
-            text = scanner.nextLine().trim();
-        } catch (InputMismatchException inputMismatchException) {
-            System.out.println("Podano bledne dane wejsciowe!");
-            System.exit(-1);
-        } catch (NoSuchElementException noSuchElementException) {
-            System.out.println("Podano za malo argumentow");
+        if (args.length != 3) {
+            System.out.println("Podano bledne dane wejsciowe");
             System.exit(-1);
         }
 
-        System.out.println(text.substring(x));
+        int lower_bound = Integer.parseInt(args[1]);
+        int upper_bound = Integer.parseInt(args[2]);
+        String string = args[0];
 
+        if (lower_bound < 0 || upper_bound < 0 || (lower_bound > upper_bound)) {
+            System.out.println("Podano bledne dane wejsciowe");
+            System.exit(-2);
+        }
+
+        System.out.println(string.substring(lower_bound, upper_bound));
     }
 }
