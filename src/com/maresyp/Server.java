@@ -1,5 +1,7 @@
 package com.maresyp;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,7 +21,7 @@ public class Server {
     }
 
     private static class ConnectionHandler extends Thread {
-        private Socket clientSocket;
+        private final Socket clientSocket;
 
         public ConnectionHandler(Socket socket) {
             this.clientSocket = socket;
@@ -27,8 +29,32 @@ public class Server {
 
         @Override
         public void run() {
-            // TODO: implement
-            super.run();
+            try {
+                DataInputStream input = new DataInputStream(this.clientSocket.getInputStream());
+                DataOutputStream outputStream = new DataOutputStream(this.clientSocket.getOutputStream());
+                // get data from client
+                int timeout = input.readInt();
+                String message = input.readUTF();
+                System.out.println("Server received message : " + message + " with : " + timeout + " timeout.");
+
+                // send data back
+                Thread.sleep(timeout);
+                outputStream.writeUTF(message);
+            } catch (IOException e) {
+                System.out.println(e);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        // create server object
+        Server server = new Server();
+        try {
+            server.start(6666);
+        } finally {
+            server.stop();
         }
     }
 }
