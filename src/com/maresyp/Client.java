@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
     private Socket clientSocket;
@@ -34,7 +35,25 @@ public class Client {
         // create client
         Client client = new Client();
         client.startConnection("127.0.0.1", 6666);
-        client.sendNotification("Test message", 5);
+        while (true) {
+            System.out.println("Select an option");
+            System.out.println("[1] Send message");
+            System.out.println("[2] Exit");
+            Scanner scanner = new Scanner(System.in);
+            int choice = Integer.parseInt(scanner.nextLine());
+            if (choice == 1) {
+                System.out.println("Type timeout in seconds..");
+                int timeout = Integer.parseInt(scanner.nextLine());
+                System.out.println("Type your message..");
+                String message = scanner.nextLine();
+
+                client.sendNotification(message, timeout);
+            } else if (choice == 2) {
+                break;
+            } else {
+                System.out.println("Please try again...");
+            }
+        }
         client.stopConnection();
     }
 }
