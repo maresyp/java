@@ -1,24 +1,22 @@
 package com.maresyp;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class Server {
-    private ServerSocket serverSocket;
-
     public void start(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
-        while (true) {
-            new ConnectionHandler(serverSocket.accept()).start();
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            while(true) {
+                Socket socket = serverSocket.accept();
+                new ConnectionHandler(socket).start();
+            }
+        } catch (Exception exception) {
+            System.out.println("Error occured while accepting new connection. " + Arrays.toString(exception.getStackTrace()));
         }
     }
 
-    public void stop() throws IOException {
-        serverSocket.close();
-    }
 
     private static class ConnectionHandler extends Thread {
         private final Socket clientSocket;
@@ -30,20 +28,20 @@ public class Server {
         @Override
         public void run() {
             try {
-                DataInputStream input = new DataInputStream(this.clientSocket.getInputStream());
-                DataOutputStream outputStream = new DataOutputStream(this.clientSocket.getOutputStream());
-                // get data from client
-                int timeout = input.readInt();
-                String message = input.readUTF();
-                System.out.println("Server received message : " + message + " with : " + timeout + " timeout.");
-
-                // send data back
-                Thread.sleep(timeout);
-                outputStream.writeUTF(message);
-            } catch (IOException e) {
-                System.out.println(e);
-            } catch (InterruptedException e) {
-                System.out.println(e);
+                BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
+                while (true) {
+                    int timeout = Integer.parseInt(input.readLine()) * 1000;
+                    String message = input.readLine();
+                    if (message == null) {
+                        break;
+                    }
+                    System.out.println("Server got [" + timeout / 1000 + "s] " + message);
+                    Thread.sleep(timeout);
+                    output.println(message);
+                }
+            } catch (Exception exception) {
+                System.out.println("Error occured in ConnectionHandler " + Arrays.toString(exception.getStackTrace()));
             }
         }
     }
@@ -51,10 +49,6 @@ public class Server {
     public static void main(String[] args) throws IOException {
         // create server object
         Server server = new Server();
-        try {
-            server.start(6666);
-        } finally {
-            server.stop();
-        }
+        server.start(6666);
     }
 }
